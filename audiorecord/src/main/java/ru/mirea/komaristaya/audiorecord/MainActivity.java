@@ -1,0 +1,84 @@
+package ru.mirea.komaristaya.audiorecord;
+
+import static android.Manifest.permission.RECORD_AUDIO;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+
+import android.content.pm.PackageManager;
+import android.media.MediaPlayer;
+import android.media.MediaRecorder;
+import android.os.Bundle;
+import android.os.Environment;
+import android.view.View;
+import android.widget.Button;
+
+import java.io.File;
+
+import ru.mirea.komaristaya.audiorecord.databinding.ActivityMainBinding;
+
+public class MainActivity extends AppCompatActivity {
+    private ActivityMainBinding binding;
+    private	static final int REQUEST_CODE_PERMISSION = 200;
+    private	final String TAG = MainActivity.class.getSimpleName();
+    private	boolean	isWork;
+    private	String	fileName = null;
+    private Button recordButton	= null;
+    private	Button	playButton = null;
+    private MediaRecorder recorder = null;
+    private MediaPlayer player = null;
+    boolean	isStartRecording = true;
+    boolean	isStartPlaying = true;
+    private String recordFilePath;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        binding	= ActivityMainBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
+
+        recordButton =	binding.recordButton;
+        playButton = binding.playButton;
+        playButton.setEnabled(false);
+        recordFilePath = (new File(getExternalFilesDir(Environment.DIRECTORY_MUSIC), "/audiorecordtest.3gp")).getAbsolutePath();
+
+        int	audioRecordPermissionStatus	= ContextCompat.checkSelfPermission(this, RECORD_AUDIO);
+        int	storagePermissionStatus	= ContextCompat.checkSelfPermission(this, android.Manifest.permission.
+                WRITE_EXTERNAL_STORAGE);
+        if	(audioRecordPermissionStatus ==	PackageManager.PERMISSION_GRANTED && storagePermissionStatus
+                ==	PackageManager.PERMISSION_GRANTED)	{
+            isWork = true;
+        }
+        else	{
+            ActivityCompat.requestPermissions(this,	new	String[] {RECORD_AUDIO,
+                    android.Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_CODE_PERMISSION);
+         }
+        recordButton.setOnClickListener(new	View.OnClickListener()	{
+            @Override
+            public	void onClick(View v)	{
+                if	(isStartRecording)	{
+                    recordButton.setText("Stop	recording");
+                    playButton.setEnabled(false);
+                }	else	{
+                    recordButton.setText("Start	recording");
+                    playButton.setEnabled(true);
+                }
+                isStartRecording = !isStartRecording;
+            }
+        });
+        playButton.setOnClickListener(new	View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (isStartPlaying) {
+                    playButton.setText("Stop playing");
+                    recordButton.setEnabled(false);
+                } else {
+                    playButton.setText("Start playing");
+                    recordButton.setEnabled(false);
+                }
+                isStartPlaying = !isStartPlaying;
+            }
+        });
+    }
+}
