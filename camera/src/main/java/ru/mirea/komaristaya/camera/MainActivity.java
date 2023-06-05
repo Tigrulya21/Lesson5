@@ -46,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
 
         if	(cameraPermissionStatus	== PackageManager.PERMISSION_GRANTED && storagePermissionStatus
                 ==	PackageManager.PERMISSION_GRANTED)	{
-            isWork	=	true;
+            isWork = true;
         }	else	{
             ActivityCompat.requestPermissions(this, new	String[] {android.Manifest.permission.CAMERA,
                     android.Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_CODE_PERMISSION);
